@@ -1,0 +1,7 @@
+new req at /user/signup by method GET
+new req at /user/signup by method POST
+new req at / by method GET
+new req at /user/signin by method GET
+new req at /user/signin by method POST
+new req at /user/signin by method POST
+new req at / by method GET

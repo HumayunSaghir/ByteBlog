@@ -1,0 +1,22 @@
+{
+  "name": "blogify",
+  "version": "1.0.0",
+  "description": "the blogging app",
+  "license": "ISC",
+  "author": "humayun saghir",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev" : "nodemon app.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
