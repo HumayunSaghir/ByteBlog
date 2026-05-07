@@ -1,4 +1,5 @@
 const userModel = require("../models/users")
+const { createToken } = require("../services/auth")
 
 function handleShowSignupPage(req, res){
     return res.render("signup")
@@ -13,6 +14,9 @@ async function handleSignupFunctionality(req, res){
         password,
     })
 
+    const token = createToken(createdUser)
+    res.cookie("token", token)
+
     return res.status(201).redirect("/")
 }
 
@@ -24,15 +28,22 @@ async function handleLoginValidation(req, res){
     const {email, password} = req.body
 
     // using database static function
-    const user = await userModel.matchPassword(email, password)
-
-    // incase user is not found
-    if(!user){
-        throw new Error("Invalid Credentials")
+    try{
+        const token = await userModel.matchPassword(email, password)
+        res.cookie("token", token).redirect("/")
     }
 
-    // incase user found
-    return res.redirect("/")
+    catch(err){
+        return res.render("signin", {
+            message : err.message
+        })
+    }
+
+}
+
+function handleLogout(req, res){
+    res.clearCookie("token")
+    return res.status(200).redirect("/")
 }
 
 module.exports = {
@@ -40,4 +51,5 @@ module.exports = {
     handleSignupFunctionality,
     handleLoginValidation, 
     handleShowLoginPage,
+    handleLogout,
 }

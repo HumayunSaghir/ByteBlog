@@ -5,6 +5,9 @@ const path = require("path")
 const connectDatabase = require("./connection")
 const homeRouter = require("./routes/home")
 const createLogs = require("./middlewares/logs")
+const cookieParser = require("cookie-parser")
+const {checkForToken} = require("./middlewares/auth")
+const blogRouter = require("./routes/blogs")
 
 // database connection
 connectDatabase(process.env.MONGO_URL)
@@ -17,6 +20,8 @@ const app = express()
 // middlewares
 app.use(express.urlencoded({extended : false}))
 app.use(createLogs("./logs.txt"))
+app.use(cookieParser())
+app.use(express.static(path.resolve("./public")))
 
 
 // settingup templating engine
@@ -25,6 +30,7 @@ app.set("views", path.resolve("./views"))
 
 // routers configuration
 app.use("/user", userRouter)
-app.use("/", homeRouter)
+app.use("/blog", checkForToken, blogRouter)
+app.use("/", checkForToken, homeRouter)
 
 app.listen(PORT, () => console.log(`Server is listening at port ${PORT}`))

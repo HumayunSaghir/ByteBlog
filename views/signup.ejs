@@ -1,36 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <%- include('./partials/head') %>
-    <title>Signup</title>
+    <title>Sign up · ByteBlog</title>
+
+    <!-- Favicon (inline SVG — matches the ByteBlog logo mark) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif' font-weight='800' font-size='38' fill='white'>B</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif' font-weight='800' font-size='38' fill='white'>B</text></svg>">
+
+    <style>
+        :root {
+            --bb-blue: #2F6BFF;
+            --bb-blue-dark: #1E54E0;
+            --bb-blue-light: #4F86FF;
+            --bb-ink: #0F172A;
+            --bb-muted: #64748B;
+            --bb-line: #E5E7EB;
+            --bb-bg: #F4F5F7;
+            --bb-card: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background: var(--bb-bg);
+            color: var(--bb-ink);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .bb-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        /* LEFT: Brand panel */
+        .bb-brand {
+            position: relative;
+            background:
+                radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.12), transparent 60%),
+                radial-gradient(80% 60% at 100% 100%, rgba(255,255,255,0.08), transparent 55%),
+                linear-gradient(160deg, #1E54E0 0%, #2F6BFF 55%, #4F86FF 100%);
+            color: #fff;
+            padding: 48px 56px;
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(30,84,224,0.25), 0 2px 8px rgba(15,23,42,0.06);
+        }
+
+        .bb-brand::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.10) 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .bb-brand::after {
+            content: "";
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%);
+            bottom: -200px;
+            right: -180px;
+            pointer-events: none;
+        }
+
+        .bb-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 21px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 1;
+            padding: 8px 16px 8px 8px;
+            background: rgba(255,255,255,0.10);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 999px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            align-self: flex-start;
+        }
+
+        .bb-logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--bb-blue);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 17px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .bb-hero {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+        }
+
+        .bb-hero h2 {
+            font-size: 42px;
+            line-height: 1.1;
+            font-weight: 700;
+            margin: 0 0 18px 0;
+            letter-spacing: -0.025em;
+        }
+
+        .bb-hero p {
+            font-size: 15.5px;
+            line-height: 1.65;
+            color: rgba(255,255,255,0.85);
+            margin: 0;
+        }
+
+        .bb-feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 32px 0 0 0;
+            display: grid;
+            gap: 14px;
+        }
+
+        .bb-feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14.5px;
+            color: rgba(255,255,255,0.94);
+        }
+
+        .bb-check {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.22);
+            border: 1px solid rgba(255,255,255,0.4);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .bb-check svg { width: 13px; height: 13px; }
+
+        .bb-foot {
+            position: relative;
+            z-index: 1;
+            font-size: 13px;
+            color: rgba(255,255,255,0.72);
+        }
+
+        /* RIGHT: Form panel */
+        .bb-form-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bb-card {
+            width: 100%;
+            max-width: 460px;
+            background: var(--bb-card);
+            border-radius: 28px;
+            padding: 44px 44px;
+            box-shadow:
+                0 1px 2px rgba(15,23,42,0.04),
+                0 8px 24px rgba(15,23,42,0.06),
+                0 24px 60px rgba(15,23,42,0.05);
+            border: 1px solid rgba(15,23,42,0.04);
+        }
+
+        .bb-card-head { margin-bottom: 28px; }
+
+        .bb-card-head h1 {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.025em;
+            color: var(--bb-ink);
+        }
+
+        .bb-card-head p {
+            font-size: 14.5px;
+            color: var(--bb-muted);
+            margin: 0;
+            line-height: 1.55;
+        }
+
+        /* Alert */
+        .bb-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 16px;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #991B1B;
+            border-radius: 14px;
+            font-size: 13.5px;
+            margin-bottom: 22px;
+        }
+
+        .bb-alert svg { flex-shrink: 0; margin-top: 1px; }
+        .bb-alert p { margin: 0; line-height: 1.45; }
+
+        /* Form fields */
+        .bb-field { margin-bottom: 18px; }
+
+        .form-label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--bb-ink);
+            margin-bottom: 9px;
+            letter-spacing: -0.005em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--bb-ink);
+            background: #FAFBFC;
+            border: 1.5px solid var(--bb-line);
+            border-radius: 14px;
+            outline: none;
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .form-control::placeholder { color: #9AA3B2; }
+        .form-control:hover { background: #fff; border-color: #D1D5DB; }
+        .form-control:focus {
+            border-color: var(--bb-blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(47,107,255,0.12);
+        }
+
+        .form-text {
+            font-size: 12.5px;
+            color: var(--bb-muted);
+            margin-top: 7px;
+        }
+
+        /* Password strength meter */
+        .bb-strength {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .bb-strength-bar {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: #E5E7EB;
+            transition: background 0.2s ease;
+        }
+
+        .bb-strength-bar.active-1 { background: #EF4444; }
+        .bb-strength-bar.active-2 { background: #F59E0B; }
+        .bb-strength-bar.active-3 { background: #10B981; }
+        .bb-strength-bar.active-4 { background: #059669; }
+
+        .bb-strength-text {
+            font-size: 12px;
+            color: var(--bb-muted);
+            margin-top: 6px;
+            min-height: 16px;
+        }
+
+        /* Terms checkbox */
+        .bb-terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0 22px 0;
+            font-size: 13px;
+            color: var(--bb-muted);
+            line-height: 1.5;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .bb-terms input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--bb-blue);
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .bb-link {
+            color: var(--bb-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .bb-link:hover { text-decoration: underline; }
+
+        /* Submit button */
+        .btn {
+            display: inline-block;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px 22px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.05s ease, background 0.18s ease, box-shadow 0.18s ease;
+            letter-spacing: -0.005em;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(180deg, #3D77FF 0%, #2F6BFF 100%);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(47,107,255,0.32), inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(180deg, #2F6BFF 0%, #1E54E0 100%);
+            box-shadow: 0 10px 26px rgba(47,107,255,0.38), inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+
+        .btn-primary:active { transform: translateY(1px); }
+
+        .bb-signin {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: var(--bb-muted);
+        }
+
+        /* MOBILE */
+        @media (max-width: 960px) {
+            .bb-shell {
+                grid-template-columns: 1fr;
+                padding: 0;
+                gap: 0;
+            }
+
+            .bb-brand {
+                padding: 24px 24px 56px;
+                border-radius: 0 0 32px 32px;
+                box-shadow: 0 12px 30px rgba(30,84,224,0.18);
+            }
+
+            .bb-brand::after { display: none; }
+
+            .bb-logo {
+                font-size: 18px;
+                padding: 6px 14px 6px 6px;
+                gap: 10px;
+            }
+            .bb-logo-mark { width: 32px; height: 32px; font-size: 15px; }
+
+            .bb-hero { margin-top: 32px; }
+            .bb-hero h2 { font-size: 26px; line-height: 1.18; margin-bottom: 12px; }
+            .bb-hero p { font-size: 14px; line-height: 1.55; }
+
+            .bb-feature-list,
+            .bb-foot { display: none; }
+
+            .bb-form-wrap {
+                margin-top: -32px;
+                padding: 0 16px 32px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .bb-card {
+                padding: 30px 26px;
+                border-radius: 24px;
+                max-width: 100%;
+            }
+
+            .bb-card-head h1 { font-size: 26px; }
+            .bb-card-head { margin-bottom: 24px; }
+        }
+
+        @media (max-width: 380px) {
+            .bb-brand { padding: 20px 20px 48px; }
+            .bb-card { padding: 26px 22px; }
+            .bb-hero h2 { font-size: 24px; }
+        }
+    </style>
 </head>
-
 <body>
-        <h1>Signup</h1>
-        <form method="post" action="/user/signup">
-            
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Name</label>
-                <input type="text" class="form-control" id="fullname" name="fullname">
+
+    <div class="bb-shell">
+
+        <!-- LEFT BRAND PANEL -->
+        <aside class="bb-brand">
+            <div class="bb-logo">
+                <span class="bb-logo-mark">B</span>
+                <span>ByteBlog</span>
             </div>
 
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <div class="bb-hero">
+                <h2>Join a community of curious readers and writers.</h2>
+                <p>Create your free ByteBlog account in seconds. Discover thoughtful writing, follow voices you love, and start publishing stories of your own.</p>
+
+                <ul class="bb-feature-list">
+                    <li>
+                        <span class="bb-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </span>
+                        Free forever — no credit card required
+                    </li>
+                    <li>
+                        <span class="bb-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </span>
+                        Publish your first post in under a minute
+                    </li>
+                    <li>
+                        <span class="bb-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </span>
+                        Connect with thousands of writers worldwide
+                    </li>
+                </ul>
             </div>
 
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+            <div class="bb-foot">© <%= new Date().getFullYear() %> ByteBlog · Crafted for curious minds</div>
+        </aside>
+
+        <!-- RIGHT FORM PANEL -->
+        <main class="bb-form-wrap">
+            <div class="bb-card">
+
+                <div class="bb-card-head">
+                    <h1>Create your account</h1>
+                    <p>Start your ByteBlog journey — it only takes a moment.</p>
+                </div>
+
+                <% if (locals.message) { %>
+                    <div class="bb-alert" role="alert">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <p><%= locals.message %></p>
+                    </div>
+                <% } %>
+
+                <form method="post" action="/user/signup" novalidate>
+
+                    <div class="bb-field">
+                        <label for="fullname" class="form-label">Full name</label>
+                        <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Jane Doe" autocomplete="name" required>
+                    </div>
+
+                    <div class="bb-field">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" placeholder="you@example.com" autocomplete="email" required>
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="bb-field">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="At least 8 characters" autocomplete="new-password" required>
+                        <div class="bb-strength" aria-hidden="true">
+                            <span class="bb-strength-bar" id="bar1"></span>
+                            <span class="bb-strength-bar" id="bar2"></span>
+                            <span class="bb-strength-bar" id="bar3"></span>
+                            <span class="bb-strength-bar" id="bar4"></span>
+                        </div>
+                        <div class="bb-strength-text" id="strengthText"></div>
+                    </div>
+
+                    <label class="bb-terms">
+                        <input type="checkbox" name="terms" required>
+                        <span>I agree to ByteBlog's <a href="/terms" class="bb-link">Terms of Service</a> and <a href="/privacy" class="bb-link">Privacy Policy</a>.</span>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary">Create account</button>
+
+                </form>
+
+                <p class="bb-signin">
+                    Already have an account? <a href="/user/signin" class="bb-link">Sign in</a>
+                </p>
+
             </div>
+        </main>
 
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+    </div>
 
-        <%- include('./partials/script') %>
+    <script>
+        // Password strength meter — purely visual feedback
+        (function () {
+            const pwd = document.getElementById('exampleInputPassword1');
+            const bars = [1,2,3,4].map(n => document.getElementById('bar' + n));
+            const txt  = document.getElementById('strengthText');
+            const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            const colors = ['#94A3B8', '#EF4444', '#F59E0B', '#10B981', '#059669'];
+
+            function score(v) {
+                let s = 0;
+                if (v.length >= 8) s++;
+                if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+                if (/\d/.test(v)) s++;
+                if (/[^A-Za-z0-9]/.test(v)) s++;
+                if (v.length === 0) s = 0;
+                return s;
+            }
+
+            pwd.addEventListener('input', function () {
+                const s = score(pwd.value);
+                bars.forEach((b, i) => {
+                    b.className = 'bb-strength-bar' + (i < s ? ' active-' + s : '');
+                });
+                txt.textContent = pwd.value ? labels[s] + ' password' : '';
+                txt.style.color = pwd.value ? colors[s] : 'var(--bb-muted)';
+            });
+        })();
+    </script>
+
+    <%- include('./partials/script') %>
 </body>
-
 </html>
