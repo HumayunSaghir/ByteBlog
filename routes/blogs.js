@@ -1,7 +1,9 @@
 const {Router} = require("express")
-const {handleShowAddblogpage, handleBlogCreation} = require("../controllers/blogs")
 const multer = require("multer")
 const path = require("path")
+const {handleShowAddblogpage, handleBlogCreation, handleShowBlog,
+  handleCommentCreation,
+} = require("../controllers/blogs")
 
 // multer configuration
 const storage = multer.diskStorage({
@@ -18,5 +20,7 @@ const router = Router()
 
 router.get("/addBlog", handleShowAddblogpage)
 router.post("/addBlog", upload.single("coverImage") ,handleBlogCreation)
+router.get("/showBlog/:id", handleShowBlog)
+router.post("/addComment/:id", handleCommentCreation)
 
 module.exports = router
