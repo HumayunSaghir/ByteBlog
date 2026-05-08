@@ -168,38 +168,207 @@
         /* SECTION HEADER */
         .bb-section-head {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: space-between;
-            margin-bottom: 22px;
+            margin-bottom: 26px;
             gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--bb-line);
+        }
+
+        .bb-section-left {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .bb-section-eyebrow {
+            font-size: 11.5px;
+            color: var(--bb-blue);
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bb-section-eyebrow::before {
+            content: "";
+            width: 22px;
+            height: 1px;
+            background: var(--bb-blue);
         }
 
         .bb-section-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.025em;
             color: var(--bb-ink);
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .bb-section-count {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 26px;
-            height: 24px;
-            padding: 0 8px;
+            min-width: 28px;
+            height: 26px;
+            padding: 0 9px;
             background: rgba(47, 107, 255, 0.10);
             color: var(--bb-blue);
             border-radius: 999px;
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 600;
         }
 
-        /* BLOG GRID */
+        .bb-section-meta {
+            font-size: 13px;
+            color: var(--bb-muted);
+            font-weight: 500;
+        }
+
+        /* === FEATURED CARD (first article) === */
+        .bb-featured {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 0;
+            margin-bottom: 28px;
+            text-decoration: none;
+            color: inherit;
+            background: #fff;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            border-radius: 22px;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 18px rgba(15, 23, 42, 0.05);
+        }
+        .bb-featured:hover {
+            transform: translateY(-3px);
+            border-color: rgba(15, 23, 42, 0.10);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.10);
+        }
+
+        .bb-featured-cover {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            background:
+                radial-gradient(circle at 50% 50%, #FAFBFC 0%, #ECEEF1 100%);
+            overflow: hidden;
+        }
+        .bb-featured-cover img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .bb-featured:hover .bb-featured-cover img { transform: scale(1.04); }
+
+        .bb-featured-badge {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            background: #fff;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--bb-ink);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+        }
+
+        .bb-featured-badge svg { width: 12px; height: 12px; color: var(--bb-blue); }
+
+        .bb-featured-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 32px 28px;
+            gap: 18px;
+        }
+
+        .bb-featured-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--bb-muted);
+            font-weight: 600;
+        }
+
+        .bb-featured-meta-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--bb-muted);
+        }
+
+        .bb-featured-title {
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.15;
+            color: var(--bb-ink);
+            margin: 8px 0 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .bb-featured-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 1px solid var(--bb-line);
+        }
+
+        .bb-featured-read {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bb-blue);
+        }
+
+        .bb-featured-read-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #3D77FF 0%, #2F6BFF 100%);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            transition: transform 0.25s ease;
+            box-shadow: 0 4px 12px rgba(47, 107, 255, 0.32);
+        }
+        .bb-featured:hover .bb-featured-read-circle { transform: translateX(2px); }
+        .bb-featured-read-circle svg { width: 14px; height: 14px; }
+
+        .bb-featured-num {
+            font-size: 28px;
+            font-weight: 700;
+            color: rgba(15, 23, 42, 0.10);
+            letter-spacing: -0.02em;
+            font-feature-settings: "tnum";
+        }
+
+        /* === BLOG GRID === */
         .bb-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -213,8 +382,9 @@
             .bb-grid { grid-template-columns: 1fr; gap: 16px; }
         }
 
-        /* BLOG CARD */
+        /* === BLOG CARD === */
         .bb-card {
+            position: relative;
             display: flex;
             flex-direction: column;
             background: #fff;
@@ -227,12 +397,11 @@
             box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
         }
         .bb-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px);
             border-color: rgba(15, 23, 42, 0.10);
-            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.10);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.10);
         }
 
-        /* Cover — uses 'cover' fit for clean thumbnail look */
         .bb-card-cover {
             position: relative;
             width: 100%;
@@ -250,9 +419,49 @@
             object-fit: cover;
             transition: transform 0.4s ease;
         }
-        .bb-card:hover .bb-card-cover img { transform: scale(1.04); }
+        .bb-card:hover .bb-card-cover img { transform: scale(1.05); }
 
-        /* Placeholder when no cover image */
+        /* Numbered badge — top-left corner */
+        .bb-card-num {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: var(--bb-ink);
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-feature-settings: "tnum";
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
+            z-index: 2;
+        }
+
+        /* Tag pill — top-right */
+        .bb-card-tag-float {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 5px 11px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 999px;
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--bb-muted);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            z-index: 2;
+        }
+
         .bb-card-placeholder {
             position: absolute;
             inset: 0;
@@ -263,18 +472,36 @@
         .bb-card-placeholder svg { width: 36px; height: 36px; opacity: 0.5; }
 
         .bb-card-body {
-            padding: 18px 20px 20px;
+            padding: 18px 20px 18px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             flex: 1;
         }
 
+        .bb-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--bb-muted);
+            font-weight: 600;
+        }
+
+        .bb-card-meta-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--bb-muted);
+        }
+
         .bb-card-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: -0.015em;
-            line-height: 1.35;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
             color: var(--bb-ink);
             margin: 0;
             display: -webkit-box;
@@ -288,34 +515,38 @@
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 4px;
+            padding-top: 14px;
+            border-top: 1px solid var(--bb-line);
         }
 
         .bb-card-read {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             color: var(--bb-blue);
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
+            letter-spacing: 0.01em;
         }
-        .bb-card-read svg { width: 14px; height: 14px; transition: transform 0.18s ease; }
-        .bb-card:hover .bb-card-read svg { transform: translateX(2px); }
+        .bb-card-read svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+        .bb-card:hover .bb-card-read svg { transform: translateX(3px); }
 
-        .bb-card-tag {
-            font-size: 11px;
+        .bb-card-time {
+            font-size: 12px;
             color: var(--bb-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
             font-weight: 500;
         }
 
-        /* EMPTY / GUEST STATES */
+        /* === EMPTY / GUEST STATES === */
         .bb-empty {
             background: #fff;
             border: 1px dashed var(--bb-line);
             border-radius: 20px;
-            padding: 48px 24px;
+            padding: 56px 24px;
             text-align: center;
             color: var(--bb-muted);
         }
@@ -332,16 +563,20 @@
         }
 
         .bb-empty h3 {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
             color: var(--bb-ink);
-            margin: 0 0 6px 0;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.02em;
         }
 
         .bb-empty p {
             font-size: 14.5px;
-            margin: 0 0 20px 0;
-            line-height: 1.5;
+            margin: 0 0 22px 0;
+            line-height: 1.55;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .bb-empty-cta {
@@ -366,29 +601,36 @@
         .bb-empty-cta svg { width: 14px; height: 14px; }
 
         /* Mobile */
+        @media (max-width: 900px) {
+            .bb-featured { grid-template-columns: 1fr; }
+            .bb-featured-cover { aspect-ratio: 16 / 9; }
+            .bb-featured-body { padding: 26px 24px; }
+            .bb-featured-title { font-size: 24px; }
+        }
+
         @media (max-width: 720px) {
             .bb-page { padding: 20px 16px 56px; }
             .bb-hero { padding: 32px 26px; border-radius: 22px; margin-bottom: 28px; }
             .bb-hero h1 { font-size: 30px; }
             .bb-hero p { font-size: 14.5px; }
             .bb-hero-cta, .bb-hero-ghost { padding: 11px 18px; font-size: 14px; }
-            .bb-section-title { font-size: 20px; }
 
-            /* Mobile card tweaks — keep them feeling like cards, not full sections */
+            .bb-section-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .bb-section-title { font-size: 22px; }
+
+            .bb-featured { border-radius: 18px; }
+            .bb-featured-body { padding: 22px 20px; gap: 14px; }
+            .bb-featured-title { font-size: 22px; }
+            .bb-featured-foot { flex-direction: row; gap: 12px; }
+            .bb-featured-num { font-size: 22px; }
+
             .bb-card {
                 border-radius: 16px;
                 box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 16px rgba(15, 23, 42, 0.06);
             }
-            .bb-card-cover {
-                aspect-ratio: 16 / 9;  /* Slightly wider/shorter on mobile */
-            }
-            .bb-card-body {
-                padding: 14px 16px 16px;
-                gap: 10px;
-            }
-            .bb-card-title { font-size: 16px; }
-            .bb-card-tag { font-size: 10.5px; }
-            .bb-card-read { font-size: 13px; }
+            .bb-card-cover { aspect-ratio: 16 / 9; }
+            .bb-card-body { padding: 16px 18px; gap: 12px; }
+            .bb-card-title { font-size: 17px; }
         }
     </style>
 </head>
@@ -440,48 +682,109 @@
         <section id="latest">
 
             <div class="bb-section-head">
-                <h2 class="bb-section-title">
-                    Latest posts
-                    <% if (locals.blog && locals.blog.length > 0) { %>
-                        <span class="bb-section-count"><%= locals.blog.length %></span>
-                    <% } %>
-                </h2>
+                <div class="bb-section-left">
+                    <span class="bb-section-eyebrow">The Latest</span>
+                    <h2 class="bb-section-title">
+                        Latest posts
+                        <% if (locals.blog && locals.blog.length > 0) { %>
+                            <span class="bb-section-count"><%= locals.blog.length %></span>
+                        <% } %>
+                    </h2>
+                </div>
+                <% if (locals.blog && locals.blog.length > 0) { %>
+                    <span class="bb-section-meta">Updated <%= new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %></span>
+                <% } %>
             </div>
 
             <% if (locals.blog && locals.blog.length > 0) { %>
 
-                <div class="bb-grid">
-                    <% locals.blog.forEach(blog => { %>
-                        <a class="bb-card" href="/blog/showBlog/<%= blog._id %>">
-                            <div class="bb-card-cover">
-                                <% if (blog.coverImageUrl) { %>
-                                    <img src="<%= blog.coverImageUrl %>" alt="<%= blog.title %>" loading="lazy">
-                                <% } else { %>
-                                    <div class="bb-card-placeholder">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                            <polyline points="21 15 16 10 5 21"></polyline>
-                                        </svg>
-                                    </div>
-                                <% } %>
+                <% const featured = locals.blog[0]; const rest = locals.blog.slice(1); %>
+
+                <!-- Featured (first post) -->
+                <a class="bb-featured" href="/blog/showBlog/<%= featured._id %>">
+                    <div class="bb-featured-cover">
+                        <span class="bb-featured-badge">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
+                            Featured
+                        </span>
+                        <% if (featured.coverImageUrl) { %>
+                            <img src="<%= featured.coverImageUrl %>" alt="<%= featured.title %>" loading="lazy">
+                        <% } else { %>
+                            <div class="bb-card-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
                             </div>
-                            <div class="bb-card-body">
-                                <h3 class="bb-card-title"><%= blog.title %></h3>
-                                <div class="bb-card-foot">
-                                    <span class="bb-card-tag">Article</span>
-                                    <span class="bb-card-read">
-                                        Read more
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            <polyline points="12 5 19 12 12 19"></polyline>
-                                        </svg>
-                                    </span>
+                        <% } %>
+                    </div>
+                    <div class="bb-featured-body">
+                        <div>
+                            <div class="bb-featured-meta">
+                                <span>Article</span>
+                                <span class="bb-featured-meta-dot"></span>
+                                <span>5 min read</span>
+                            </div>
+                            <h3 class="bb-featured-title"><%= featured.title %></h3>
+                        </div>
+                        <div class="bb-featured-foot">
+                            <span class="bb-featured-read">
+                                <span class="bb-featured-read-circle">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                </span>
+                                Read full article
+                            </span>
+                            <span class="bb-featured-num">01</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Rest of the grid -->
+                <% if (rest.length > 0) { %>
+                    <div class="bb-grid">
+                        <% rest.forEach((blog, idx) => { %>
+                            <a class="bb-card" href="/blog/showBlog/<%= blog._id %>">
+                                <div class="bb-card-cover">
+                                    <span class="bb-card-num"><%= String(idx + 2).padStart(2, '0') %></span>
+                                    <span class="bb-card-tag-float">Article</span>
+                                    <% if (blog.coverImageUrl) { %>
+                                        <img src="<%= blog.coverImageUrl %>" alt="<%= blog.title %>" loading="lazy">
+                                    <% } else { %>
+                                        <div class="bb-card-placeholder">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                <polyline points="21 15 16 10 5 21"></polyline>
+                                            </svg>
+                                        </div>
+                                    <% } %>
                                 </div>
-                            </div>
-                        </a>
-                    <% }) %>
-                </div>
+                                <div class="bb-card-body">
+                                    <div class="bb-card-meta">
+                                        <span>3 min read</span>
+                                        <span class="bb-card-meta-dot"></span>
+                                        <span>New</span>
+                                    </div>
+                                    <h3 class="bb-card-title"><%= blog.title %></h3>
+                                    <div class="bb-card-foot">
+                                        <span class="bb-card-time">Just posted</span>
+                                        <span class="bb-card-read">
+                                            Read more
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                <polyline points="12 5 19 12 12 19"></polyline>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        <% }) %>
+                    </div>
+                <% } %>
 
             <% } else if (locals.user) { %>
 
@@ -494,7 +797,7 @@
                         </svg>
                     </div>
                     <h3>No posts yet</h3>
-                    <p>Be the first to share something with the community.<br>Your story could be exactly what someone needs to read today.</p>
+                    <p>Be the first to share something with the community. Your story could be exactly what someone needs to read today.</p>
                     <a href="/blog/addBlog" class="bb-empty-cta">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 20h9"></path>
@@ -515,7 +818,7 @@
                         </svg>
                     </div>
                     <h3>Sign in to see the feed</h3>
-                    <p>Create a free account to read posts, follow writers,<br>and share your own ideas with the ByteBlog community.</p>
+                    <p>Create a free account to read posts, follow writers, and share your own ideas with the ByteBlog community.</p>
                     <a href="/user/signup" class="bb-empty-cta">
                         Create your account
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
