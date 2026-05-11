@@ -42,6 +42,7 @@ async function handleLoginValidation(req, res){
 }
 
 function handleLogout(req, res){
+    req.user = undefined
     res.clearCookie("token")
     return res.status(200).redirect("/")
 }

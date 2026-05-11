@@ -25,10 +25,11 @@ async function handleBlogCreation(req, res){
 
 async function handleShowBlog(req, res){
     // fetching the blogs
-    const blog = await blogModel.find({_id : req.params.id}).populate("createdBy")
+    const blog = await blogModel.findById(req.params.id).populate("createdBy")
+    blog.views++
+    await blog.save()
     // fetching the comments
     const comments = await commentModel.find({blogId : req.params.id}).populate("createdBy")
-
     return res.status(200).render("showBlog", {
         user : req.user,
         data : blog,
