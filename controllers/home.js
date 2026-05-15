@@ -3,7 +3,7 @@ const blogModel = require("../models/blogs")
 async function handleShowHomepage(req, res){
     if(req.user === undefined){
         return res.status(200).render("home", {
-            user : req.undefined,
+            user : undefined,
             blog : undefined,
         })
     }

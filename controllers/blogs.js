@@ -19,7 +19,6 @@ async function handleBlogCreation(req, res){
 
     // redirect to blog show page.
     const blogId = createdBlog._id.toString()
-    console.log(blogId)
     return res.redirect(`/blog/showBlog/${blogId}`)
 }
 
