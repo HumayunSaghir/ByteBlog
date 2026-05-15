@@ -14,13 +14,21 @@
 
         // Enable drop cap for larger articles
         const hasDropcap = (blog.body || '').length >= 200;
+
+        // Check if current user has liked this blog
+        const isLiked = locals.user && locals.likesData && locals.likesData.likedBy
+            ? locals.likesData.likedBy.some(id => id.toString() === locals.user._id.toString())
+            : false;
+
+        const likeCount = locals.likesData && locals.likesData.likedBy
+            ? locals.likesData.likedBy.length
+            : 0;
     %>
 
     <title><%= blog.title %> · ByteBlog</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif' font-weight='800' font-size='38' fill='white'>B</text></svg>">
-
     <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif' font-weight='800' font-size='38' fill='white'>B</text></svg>">
 
     <style>
@@ -36,12 +44,9 @@
             --bb-card: #FFFFFF;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
-        html,
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -69,15 +74,8 @@
             margin-bottom: 22px;
             transition: color 0.18s ease;
         }
-
-        .bb-back:hover {
-            color: var(--bb-ink);
-        }
-
-        .bb-back svg {
-            width: 16px;
-            height: 16px;
-        }
+        .bb-back:hover { color: var(--bb-ink); }
+        .bb-back svg { width: 16px; height: 16px; }
 
         .bb-title {
             font-size: 40px;
@@ -98,7 +96,6 @@
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
             border: 1px solid rgba(15, 23, 42, 0.04);
         }
-
         .bb-cover img {
             display: block;
             width: 100%;
@@ -116,14 +113,12 @@
             font-weight: 400;
             letter-spacing: -0.003em;
         }
-
         .bb-body p {
             margin: 0 0 1.4em 0;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-
-        .bb-body.has-dropcap>p:first-child::first-letter {
+        .bb-body.has-dropcap > p:first-child::first-letter {
             float: left;
             font-size: 3.4em;
             line-height: 0.9;
@@ -134,6 +129,7 @@
             letter-spacing: -0.04em;
         }
 
+        /* Author card */
         .bb-author-card {
             display: flex;
             align-items: center;
@@ -145,6 +141,7 @@
             padding: 18px 22px;
             box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 12px rgba(15, 23, 42, 0.04);
             flex-wrap: wrap;
+            margin-bottom: 16px;
         }
 
         .bb-author-left {
@@ -196,6 +193,108 @@
             font-weight: 500;
         }
 
+        /* ===== LIKE BUTTON ===== */
+        .bb-like-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #fff;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            border-radius: 18px;
+            padding: 14px 22px;
+            margin-bottom: 0;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .bb-like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.05s ease, box-shadow 0.18s ease;
+            border: 2px solid transparent;
+        }
+
+        /* Liked state — filled blue */
+        .bb-like-btn.liked {
+            background: linear-gradient(180deg, #3D77FF 0%, #2F6BFF 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 6px 16px rgba(47, 107, 255, 0.30);
+        }
+        .bb-like-btn.liked:hover {
+            background: linear-gradient(180deg, #2F6BFF 0%, #1E54E0 100%);
+            box-shadow: 0 8px 20px rgba(47, 107, 255, 0.38);
+            transform: translateY(-1px);
+        }
+
+        /* Unliked state — white with border */
+        .bb-like-btn.not-liked {
+            background: #fff;
+            color: var(--bb-muted);
+            border-color: var(--bb-line);
+        }
+        .bb-like-btn.not-liked:hover {
+            background: #F0F4FF;
+            color: var(--bb-blue);
+            border-color: rgba(47, 107, 255, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .bb-like-btn svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s ease;
+        }
+        .bb-like-btn:hover svg { transform: scale(1.15); }
+        .bb-like-btn:active { transform: translateY(1px); }
+
+        .bb-like-count {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--bb-muted);
+        }
+
+        .bb-like-count strong {
+            color: var(--bb-ink);
+            font-weight: 700;
+        }
+
+        /* Guest like prompt */
+        .bb-like-guest {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--bb-muted);
+            background: #F9FAFB;
+            border: 2px solid var(--bb-line);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .bb-like-guest svg { width: 18px; height: 18px; }
+
+        .bb-like-guest-tip {
+            font-size: 13px;
+            color: var(--bb-muted);
+        }
+        .bb-like-guest-tip a {
+            color: var(--bb-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .bb-like-guest-tip a:hover { text-decoration: underline; }
+
+        /* Comments */
         .bb-comments {
             margin-top: 48px;
             padding-top: 36px;
@@ -209,6 +308,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.02em;
+            color: var(--bb-ink);
         }
 
         .bb-count-pill {
@@ -231,35 +332,85 @@
             border-radius: 18px;
             padding: 18px;
             margin-bottom: 28px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+
+        .bb-comment-form h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bb-ink);
+            margin: 0 0 12px 0;
         }
 
         .bb-comment-row {
             display: flex;
             gap: 12px;
+            align-items: stretch;
         }
 
         .bb-comment-input {
             flex: 1;
             padding: 12px 16px;
             border-radius: 12px;
-            border: 1px solid var(--bb-line);
-            font-size: 14px;
+            border: 1.5px solid var(--bb-line);
+            font-size: 14.5px;
+            font-family: inherit;
+            color: var(--bb-ink);
+            background: #FAFBFC;
             outline: none;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
-
+        .bb-comment-input::placeholder { color: #9AA3B2; }
         .bb-comment-input:focus {
             border-color: var(--bb-blue);
+            box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.10);
+            background: #fff;
         }
 
         .bb-comment-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 0 18px;
             border: none;
             border-radius: 12px;
-            background: var(--bb-blue);
+            background: linear-gradient(180deg, #3D77FF 0%, #2F6BFF 100%);
             color: #fff;
+            font-family: inherit;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 6px 14px rgba(47, 107, 255, 0.28), inset 0 1px 0 rgba(255,255,255,0.18);
+            transition: box-shadow 0.18s ease, transform 0.05s ease;
+            white-space: nowrap;
         }
+        .bb-comment-submit:hover {
+            background: linear-gradient(180deg, #2F6BFF 0%, #1E54E0 100%);
+            box-shadow: 0 8px 18px rgba(47, 107, 255, 0.36), inset 0 1px 0 rgba(255,255,255,0.18);
+        }
+        .bb-comment-submit:active { transform: translateY(1px); }
+        .bb-comment-submit svg { width: 14px; height: 14px; }
+
+        .bb-signin-prompt {
+            background: #fff;
+            border: 1px solid rgba(15, 23, 42, 0.06);
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 28px;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        }
+        .bb-signin-prompt p {
+            margin: 0 0 12px 0;
+            font-size: 14.5px;
+            color: var(--bb-muted);
+        }
+        .bb-signin-prompt a {
+            color: var(--bb-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .bb-signin-prompt a:hover { text-decoration: underline; }
 
         .bb-comment-list {
             display: flex;
@@ -274,6 +425,11 @@
             border-radius: 16px;
             padding: 16px 18px;
             border: 1px solid rgba(15, 23, 42, 0.05);
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+        .bb-comment:hover {
+            border-color: rgba(15, 23, 42, 0.10);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         }
 
         .bb-comment-img,
@@ -289,18 +445,25 @@
             color: #fff;
             font-weight: 700;
             font-size: 14px;
+            text-transform: uppercase;
         }
 
+        .bb-comment-content { flex: 1; min-width: 0; }
+
         .bb-comment-author {
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 600;
             margin: 0 0 4px;
+            color: var(--bb-ink);
         }
 
         .bb-comment-text {
             margin: 0;
+            font-size: 14.5px;
             line-height: 1.6;
             color: var(--bb-ink-soft);
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .bb-empty {
@@ -312,26 +475,35 @@
             border: 1px dashed var(--bb-line);
         }
 
+        .bb-empty-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 12px;
+            border-radius: 12px;
+            background: rgba(47, 107, 255, 0.08);
+            color: var(--bb-blue);
+            display: grid;
+            place-items: center;
+        }
+
+        .bb-empty p { margin: 0; font-size: 14px; }
+
+        /* Mobile */
         @media (max-width: 720px) {
-            .bb-page {
-                padding: 20px 16px 56px;
-            }
-
-            .bb-title {
-                font-size: 28px;
-            }
-
-            .bb-comment-row {
-                flex-direction: column;
-            }
-
-            .bb-comment-submit {
-                height: 44px;
-            }
+            .bb-page { padding: 20px 16px 56px; }
+            .bb-title { font-size: 28px; margin-bottom: 20px; }
+            .bb-body { font-size: 16px; line-height: 1.7; margin-bottom: 32px; }
+            .bb-cover { border-radius: 16px; margin-bottom: 24px; }
+            .bb-author-card { padding: 14px 16px; gap: 12px; }
+            .bb-like-bar { padding: 12px 16px; }
+            .bb-comments { margin-top: 40px; padding-top: 28px; }
+            .bb-comment-row { flex-direction: column; }
+            .bb-comment-submit { padding: 12px 18px; justify-content: center; }
+            .bb-comment { padding: 14px; gap: 12px; }
+            .bb-body.has-dropcap > p:first-child::first-letter { font-size: 2.8em; }
         }
     </style>
 </head>
-
 <body>
 
     <%- include('./partials/nav') %>
@@ -340,7 +512,7 @@
 
         <!-- Back -->
         <a href="/" class="bb-back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
@@ -351,7 +523,7 @@
         <h1 class="bb-title"><%= blog.title %></h1>
 
         <!-- Cover -->
-        <% if(blog.coverImageUrl){ %>
+        <% if (blog.coverImageUrl) { %>
             <figure class="bb-cover">
                 <img src="<%= blog.coverImageUrl %>" alt="<%= blog.title %>">
             </figure>
@@ -359,52 +531,82 @@
 
         <!-- Body -->
         <article class="bb-body <%= hasDropcap ? 'has-dropcap' : '' %>">
-            <% if(paragraphs.length > 0){ %>
-
+            <% if (paragraphs.length > 0) { %>
                 <% paragraphs.forEach(paragraph => { %>
                     <p><%= paragraph %></p>
                 <% }) %>
-
             <% } else { %>
-
                 <p><%= blog.body %></p>
-
             <% } %>
         </article>
 
-        <!-- Author -->
+        <!-- Author card -->
         <div class="bb-author-card">
-
             <div class="bb-author-left">
-
-                <% if(blog.createdBy && blog.createdBy.profileImageUrl){ %>
-
-                    <img class="bb-author-img"
-                        src="<%= blog.createdBy.profileImageUrl %>"
-                        alt="<%= blog.createdBy.fullname %>">
-
+                <% if (blog.createdBy && blog.createdBy.profileImageUrl) { %>
+                    <img class="bb-author-img" src="<%= blog.createdBy.profileImageUrl %>" alt="<%= blog.createdBy.fullname %>">
                 <% } else { %>
-
                     <span class="bb-avatar-fallback">
-                        <%= blog.createdBy && blog.createdBy.fullname
-                            ? blog.createdBy.fullname.charAt(0)
-                            : 'A' %>
+                        <%= blog.createdBy && blog.createdBy.fullname ? blog.createdBy.fullname.charAt(0) : 'A' %>
                     </span>
-
                 <% } %>
-
                 <div class="bb-author-info">
                     <span class="bb-author-label">Written by</span>
                     <h3 class="bb-author-name"><%= blog.createdBy.fullname %></h3>
                 </div>
-
             </div>
-
             <div class="bb-published">
-                Published On :
-                <%= blog.createdAt.toLocaleString() %>
+                Published on <%= blog.createdAt.toLocaleString() %>
             </div>
+        </div>
 
+        <!-- Like bar -->
+        <div class="bb-like-bar">
+            <% if (locals.user) { %>
+
+                <a href="/blog/like/<%= blog._id %>"
+                   class="bb-like-btn <%= isLiked ? 'liked' : 'not-liked' %>">
+
+                    <% if (isLiked) { %>
+                        <!-- Filled heart — already liked -->
+                        <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        Liked
+                    <% } else { %>
+                        <!-- Outline heart — not liked -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        Like
+                    <% } %>
+                </a>
+
+                <span class="bb-like-count">
+                    <strong><%= likeCount %></strong>
+                    <%= likeCount === 1 ? 'like' : 'likes' %>
+                </span>
+
+            <% } else { %>
+
+                <!-- Guest — show disabled button + sign in prompt -->
+                <span class="bb-like-guest">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    Like
+                </span>
+
+                <span class="bb-like-count">
+                    <strong><%= likeCount %></strong>
+                    <%= likeCount === 1 ? 'like' : 'likes' %>
+                </span>
+
+                <span class="bb-like-guest-tip">
+                    <a href="/user/signin">Sign in</a> to like this post
+                </span>
+
+            <% } %>
         </div>
 
         <!-- Comments -->
@@ -415,86 +617,65 @@
                 <span class="bb-count-pill"><%= locals.commentsData.length %></span>
             </h2>
 
-            <% if(locals.user !== undefined){ %>
-
-                <form class="bb-comment-form"
-                    action="/blog/addComment/<%= blog._id %>"
-                    method="post">
-
+            <% if (locals.user !== undefined) { %>
+                <form class="bb-comment-form" action="/blog/addComment/<%= blog._id %>" method="post">
+                    <h4 class="bb-comment-form-head">Add your comment</h4>
                     <div class="bb-comment-row">
-
                         <input
                             type="text"
                             name="content"
                             class="bb-comment-input"
                             placeholder="Share your thoughts..."
                             required>
-
                         <button type="submit" class="bb-comment-submit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 2 11 13"></path>
+                                <path d="M22 2 15 22 11 13 2 9 22 2z"></path>
+                            </svg>
                             Post
                         </button>
-
                     </div>
-
                 </form>
-
+            <% } else { %>
+                <div class="bb-signin-prompt">
+                    <p>Want to join the conversation?</p>
+                    <a href="/user/signin">Sign in</a> or <a href="/user/signup">create an account</a> to leave a comment.
+                </div>
             <% } %>
 
             <!-- All comments -->
-
-            <% if(locals.commentsData && locals.commentsData.length > 0){ %>
-
+            <% if (locals.commentsData && locals.commentsData.length > 0) { %>
                 <div class="bb-comment-list">
-
                     <% locals.commentsData.forEach(comment => { %>
-
                         <div class="bb-comment">
-
-                            <% if(comment.createdBy && comment.createdBy.profileImageUrl){ %>
-
-                                <img class="bb-comment-img"
-                                    src="<%= comment.createdBy.profileImageUrl %>"
-                                    alt="<%= comment.createdBy.fullname %>">
-
+                            <% if (comment.createdBy && comment.createdBy.profileImageUrl) { %>
+                                <img class="bb-comment-img" src="<%= comment.createdBy.profileImageUrl %>" alt="<%= comment.createdBy.fullname %>">
                             <% } else { %>
-
                                 <span class="bb-comment-fallback">
-                                    <%= comment.createdBy.fullname.charAt(0) %>
+                                    <%= comment.createdBy && comment.createdBy.fullname ? comment.createdBy.fullname.charAt(0) : 'A' %>
                                 </span>
-
                             <% } %>
-
                             <div class="bb-comment-content">
-
-                                <h5 class="bb-comment-author">
-                                    <%= comment.createdBy.fullname %>
-                                </h5>
-
-                                <p class="bb-comment-text">
-                                    <%= comment.content %>
-                                </p>
-
+                                <h5 class="bb-comment-author"><%= comment.createdBy.fullname %></h5>
+                                <p class="bb-comment-text"><%= comment.content %></p>
                             </div>
-
                         </div>
-
                     <% }) %>
-
                 </div>
-
             <% } else { %>
-
                 <div class="bb-empty">
-                    No comments yet — be the first to comment.
+                    <div class="bb-empty-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <p>No comments yet — be the first to share your thoughts.</p>
                 </div>
-
             <% } %>
 
         </section>
-
     </div>
 
     <%- include('./partials/script') %>
-
 </body>
 </html>
