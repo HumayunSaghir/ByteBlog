@@ -14,7 +14,7 @@ connectDatabase(process.env.MONGO_URL)
     .then(() => console.log("Database Connected!"))
     .catch(() => console.log("Error in Database Connection!"))
 
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 const app = express()
 
 // middlewares
