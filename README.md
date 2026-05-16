@@ -9,9 +9,9 @@ A full-stack blogging platform where users can write, publish, and interact with
 ![Home Page](screenshots/home.png)
 
 <p align="center">
-  <img src="screenshots/blog.png" width="30%" />
-  <img src="screenshots/comments.png" width="30%" />
-  <img src="screenshots/profile.png" width="30%" />
+  <img src="screenshots/blog.png" width="270" />
+  <img src="screenshots/comments.png" width="270" />
+  <img src="screenshots/profile.png" width="270" />
 </p>
 
 ---
