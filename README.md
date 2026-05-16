@@ -45,7 +45,7 @@ A full-stack blogging platform where users can write, publish, and interact with
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/ByteBlog.git
+git clone https://github.com/HumayunSaghir/ByteBlog.git
 cd ByteBlog
 ```
 
