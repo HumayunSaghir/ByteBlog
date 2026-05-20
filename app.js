@@ -17,7 +17,7 @@ connectDatabase(process.env.MONGO_URL)
 const PORT = process.env.PORT || 8000
 const app = express()
 
-// middlewares
+// middlewares.
 app.use(express.urlencoded({extended : false}))
 app.use(createLogs("./logs.txt"))
 app.use(cookieParser())
