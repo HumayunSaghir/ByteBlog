@@ -1,6 +1,12 @@
 const jwt = require("jsonwebtoken")
 const secret = process.env.secret
 
+// httpOnly keeps the token away from browser scripts, sameSite blocks most cross-site requests
+const cookieOptions = {
+    httpOnly : true,
+    sameSite : "lax",
+}
+
 function createToken(user){
     const payload = {
         _id : user._id,
@@ -21,4 +27,5 @@ function verifyToken(token){
 module.exports = {
     createToken,
     verifyToken,
+    cookieOptions,
 }

@@ -1,5 +1,5 @@
 const userModel = require("../models/users")
-const { createToken } = require("../services/auth")
+const { createToken, cookieOptions } = require("../services/auth")
 
 function handleShowSignupPage(req, res){
     return res.render("signup")
@@ -30,7 +30,7 @@ async function handleSignupFunctionality(req, res){
     })
 
     const token = createToken(createdUser)
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
 
     return res.status(201).redirect("/")
 }
@@ -45,7 +45,7 @@ async function handleLoginValidation(req, res){
     // using database static function
     try{
         const token = await userModel.matchPassword(email, password)
-        res.cookie("token", token).redirect("/")
+        res.cookie("token", token, cookieOptions).redirect("/")
     }
 
     catch(err){

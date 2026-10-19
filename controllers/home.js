@@ -1,6 +1,6 @@
 const blogModel = require("../models/blogs")
 const userModel = require("../models/users")
-const {createToken} = require("../services/auth")
+const {createToken, cookieOptions} = require("../services/auth")
 
 async function handleShowHomepage(req, res){
     if(req.user === undefined){
@@ -49,7 +49,7 @@ async function handleChangeImage(req, res){
     // we need to clear and update the token
     res.clearCookie("token")
     const token = createToken(reqUser)
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
 
     return res.status(200).redirect('/user/profile')
 }
