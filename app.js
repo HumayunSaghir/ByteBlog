@@ -33,4 +33,9 @@ app.use("/user", userRouter)
 app.use("/blog", checkForToken, blogRouter)
 app.use("/", checkForToken, homeRouter)
 
+// incase no route matched
+app.use((req, res) => {
+    return res.status(404).render("notFound", { user: req.user })
+})
+
 app.listen(PORT, () => console.log(`Server is listening at port ${PORT}`))

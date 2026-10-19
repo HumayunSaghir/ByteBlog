@@ -4,231 +4,62 @@
 <head>
     <%- include('./partials/head') %>
     <title>Home · ByteBlog</title>
-
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%' y='54%' text-anchor='middle' dominant-baseline='middle' font-size='38' fill='white'>B</text></svg>">
-
-    <style>
-        :root {
-            --blue: #2F6BFF;
-            --dark: #0F172A;
-            --muted: #64748B;
-            --bg: #F4F5F7;
-            --card: #FFFFFF;
-            --line: #E5E7EB;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: var(--bg);
-            color: var(--dark);
-        }
-
-        .page {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px 20px 80px;
-        }
-
-        /* HERO */
-        .hero {
-            background: linear-gradient(135deg, #1E54E0, #2F6BFF, #4F86FF);
-            color: white;
-            padding: 45px;
-            border-radius: 24px;
-            margin-bottom: 30px;
-        }
-
-        .hero h1 { margin: 0; font-size: 38px; }
-        .hero p { margin-top: 10px; opacity: 0.9; max-width: 600px; }
-
-        /* GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-        }
-
-        /* CARD */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            height: 420px;
-        }
-
-        .card-img {
-            height: 200px;
-            width: 100%;
-            position: relative;
-            background: #eee;
-        }
-
-        .card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-        }
-
-        .placeholder {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--muted);
-        }
-
-        .card-body {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            gap: 10px;
-        }
-
-        .meta {
-            font-size: 12px;
-            color: var(--muted);
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .dot {
-            width: 4px;
-            height: 4px;
-            background: var(--muted);
-            border-radius: 50%;
-        }
-
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .footer {
-            margin-top: auto;
-            border-top: 1px solid var(--line);
-            padding-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .read-btn {
-            background: var(--blue);
-            color: white;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        /* CENTER EMPTY STATE */
-        .center-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 320px;
-        }
-
-        .empty {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px dashed var(--line);
-            max-width: 420px;
-        }
-
-        .empty h2 { margin-bottom: 10px; }
-        .empty p { color: var(--muted); margin-bottom: 20px; }
-
-        .empty a {
-            display: inline-block;
-            padding: 10px 16px;
-            background: var(--blue);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%232F6BFF'/><text x='50%' y='54%' text-anchor='middle' dominant-baseline='middle' font-size='38' fill='white'>B</text></svg>">
+    
+    
 </head>
 
-<body>
+<body class="page-home">
 
     <%- include('./partials/nav') %>
 
-    <div class="page">
+    <div class="bb-container animate-fade-in">
 
         <!-- HERO -->
-        <section class="hero">
+        <section class="hero-section">
             <h1>
                 <% if (locals.user) { %>
-                    Welcome back <%= locals.user.fullname ? locals.user.fullname.split(' ')[0] : '' %>
+                    Welcome back, <%= locals.user.name ? locals.user.name.split(' ')[0] : '' %>
                 <% } else { %>
                     Welcome to ByteBlog
                 <% } %>
             </h1>
-
-            <p>Discover ideas, stories and developer thoughts.</p>
+            <p>Discover ideas, stories, and developer thoughts crafted by the community.</p>
         </section>
 
         <!-- POSTS LOGIC -->
         <section>
-
             <% if (!locals.user) { %>
-
-                <!-- ❌ NOT LOGGED IN -->
-                <div class="center-box">
-                    <div class="empty">
-                        <h2>Please login first</h2>
-                        <p>You need an account to view and interact with blog posts.</p>
-                        <a href="/user/signin">Login</a>
-                    </div>
+                <!-- NOT LOGGED IN -->
+                <div class="empty-state">
+                    <h2>Join the Conversation</h2>
+                    <p>You need an account to view and interact with blog posts. It only takes a minute.</p>
+                    <a href="/user/signin" class="btn btn-primary">Sign in to Read</a>
                 </div>
 
             <% } else if (!locals.blog || locals.blog.length === 0) { %>
-
                 <!-- LOGGED IN BUT NO POSTS -->
-                <div class="center-box">
-                    <div class="empty">
-                        <h2>No posts available</h2>
-                        <p>Be the first one to create a post and start the community.</p>
-                        <a href="/blog/addBlog">Create Post</a>
-                    </div>
+                <div class="empty-state">
+                    <h2>No posts available yet</h2>
+                    <p>Be the first one to create a post and share your thoughts with the community.</p>
+                    <a href="/blog/addBlog" class="btn btn-primary">Create the first post</a>
                 </div>
 
             <% } else { %>
-
                 <!-- POSTS GRID -->
-                <div class="grid">
-
+                <div class="grid-cards">
                     <% locals.blog.forEach((blog) => { %>
-
-                        <a class="card" href="/blog/showBlog/<%= blog._id %>">
-
-                            <div class="card-img">
+                        <a class="card blog-card" href="/blog/showBlog/<%= blog._id %>">
+                            <div class="blog-card-img-wrapper">
                                 <% if (blog.coverImageUrl) { %>
-                                    <img src="<%= blog.coverImageUrl %>" loading="lazy">
+                                    <img src="<%= blog.coverImageUrl %>" loading="lazy" alt="Blog cover">
                                 <% } else { %>
-                                    <div class="placeholder">No Image</div>
+                                    <div class="blog-card-placeholder">No Image Available</div>
                                 <% } %>
                             </div>
-
-                            <div class="card-body">
-
-                                <div class="meta">
+                            
+                            <div class="blog-card-body">
+                                <div class="blog-card-meta">
                                     <span>
                                         <%= new Date(blog.createdAt).toLocaleDateString('en-US', {
                                             month: 'short',
@@ -236,30 +67,22 @@
                                             year: 'numeric'
                                         }) %>
                                     </span>
-
                                     <span class="dot"></span>
-
-                                    <span>👁 <%= blog.views || 0 %></span>
+                                    <span>👁 <%= blog.views || 0 %> views</span>
                                 </div>
-
-                                <div class="title">
+                                
+                                <div class="blog-card-title">
                                     <%= blog.title %>
                                 </div>
-
-                                <div class="footer">
-                                    <span class="read-btn">Read →</span>
+                                
+                                <div class="blog-card-footer d-flex justify-content-between align-items-center">
+                                    <span class="btn btn-ghost" style="padding: 6px 12px; margin-left: -12px;">Read Article →</span>
                                 </div>
-
                             </div>
-
                         </a>
-
                     <% }) %>
-
                 </div>
-
             <% } %>
-
         </section>
 
     </div>

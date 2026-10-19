@@ -18,7 +18,17 @@ function checkForToken(req, res, next){
     next()
 }
 
+// incase user is not logged in redirect to signin page
+function restrictToLoggedIn(req, res, next){
+    if(!req.user){
+        return res.redirect("/user/signin")
+    }
+
+    next()
+}
+
 
 module.exports = {
     checkForToken,
+    restrictToLoggedIn,
 }

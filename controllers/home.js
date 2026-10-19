@@ -34,6 +34,11 @@ async function handleChangeProfileImage(req, res){
 }
 
 async function handleChangeImage(req, res){
+    // incase no image is selected
+    if(!req.file){
+        return res.redirect('/user/changeProfileImage')
+    }
+
     const reqUser = await userModel.findById(req.user._id)
 
     reqUser.profileImageUrl = `/profileImages/${req.file.filename}`

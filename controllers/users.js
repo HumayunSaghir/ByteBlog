@@ -8,6 +8,21 @@ function handleShowSignupPage(req, res){
 async function handleSignupFunctionality(req, res){
     const {fullname, email, password} = req.body
 
+    // incase any field is missing
+    if(!fullname || !email || !password){
+        return res.status(400).render("signup", {
+            message : "All fields are required!"
+        })
+    }
+
+    // incase email is already registered
+    const existingUser = await userModel.findOne({email})
+    if(existingUser){
+        return res.status(409).render("signup", {
+            message : "Email already exists!"
+        })
+    }
+
     const createdUser = await userModel.create({
         fullname,
         email,

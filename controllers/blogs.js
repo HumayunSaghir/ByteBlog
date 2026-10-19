@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose")
 const blogModel = require("../models/blogs")
 const commentModel = require("../models/comments")
 const likeModel = require("../models/likes")
@@ -14,7 +15,8 @@ async function handleBlogCreation(req, res) {
     const createdBlog = await blogModel.create({
         title: title,
         body: body,
-        coverImageUrl: `/uploads/${req.file.filename}`,
+        // cover image is optional
+        coverImageUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
         createdBy: req.user._id
     })
 
@@ -24,8 +26,16 @@ async function handleBlogCreation(req, res) {
 }
 
 async function handleShowBlog(req, res) {
+    // incase id is invalid or blog is not found
+    if (!isValidObjectId(req.params.id)) {
+        return res.status(404).render("notFound", { user: req.user })
+    }
+
     // fetching the blogs
     const blog = await blogModel.findById(req.params.id).populate("createdBy")
+    if (!blog) {
+        return res.status(404).render("notFound", { user: req.user })
+    }
     blog.views++
     await blog.save()
     // fetching the comments
@@ -44,6 +54,11 @@ async function handleShowBlog(req, res) {
 async function handleCommentCreation(req, res) {
     const { content } = req.body
 
+    // incase blog does not exist
+    if (!isValidObjectId(req.params.id) || !(await blogModel.exists({ _id: req.params.id }))) {
+        return res.status(404).render("notFound", { user: req.user })
+    }
+
     const createdComment = await commentModel.create({
         content: content,
         createdBy: req.user._id,
@@ -57,6 +72,11 @@ async function handleRegisterLike(req, res) {
     // fetching the ids of user and blog
     const userId = req.user._id
     const reqId = req.params.blogId
+
+    // incase blog does not exist
+    if (!isValidObjectId(reqId) || !(await blogModel.exists({ _id: reqId }))) {
+        return res.status(404).render("notFound", { user: req.user })
+    }
 
     // search for the like document in mongodb -> findOne returns an object
     // review <--------------------------------------------------- arr and ob truthy values

@@ -2,6 +2,7 @@ const multer = require("multer")
 const path = require("path")
 const {Router} = require("express")
 const {handleShowHomepage, handleShowProfilePage, handleChangeProfileImage, handleChangeImage} = require("../controllers/home")
+const {restrictToLoggedIn} = require("../middlewares/auth")
 
 const router = Router()
 
@@ -17,8 +18,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 router.get("/", handleShowHomepage)
-router.get("/user/profile", handleShowProfilePage)
-router.get("/user/changeProfileImage", handleChangeProfileImage)
-router.post("/user/changeProfileImage",upload.single("profileImage"), handleChangeImage)
+router.get("/user/profile", restrictToLoggedIn, handleShowProfilePage)
+router.get("/user/changeProfileImage", restrictToLoggedIn, handleChangeProfileImage)
+router.post("/user/changeProfileImage", restrictToLoggedIn, upload.single("profileImage"), handleChangeImage)
 
 module.exports = router
